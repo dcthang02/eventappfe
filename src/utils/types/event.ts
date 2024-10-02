@@ -20,3 +20,15 @@ export type EventModel = {
   totalParticipants: number;
   remainingSlot: number;
 };
+
+export type FetchEventParams = {
+  categoryId?: number;
+  provinceId?: number;
+  districtId?: number;
+  wardId?: number;
+  limit?: number;
+  offset?: number;
+  search?: number;
+  isAvailable?: number;
+  isPopular?: string;
+};

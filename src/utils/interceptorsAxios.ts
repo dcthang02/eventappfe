@@ -1,8 +1,11 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://locahost:4000",
+  baseURL: "http://localhost:4000",
   timeout: 10000,
+  headers: {
+    "Content-Type": ["application/json", "multipart/form-data"],
+  },
 });
 
 axiosInstance.interceptors.request.use(
