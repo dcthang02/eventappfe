@@ -12,10 +12,10 @@ const items: MenuProps["items"] = CATEGORIES.map((item) => ({
 }));
 
 const HeaderBar = () => {
-  const { token } = useAuth();
+  const { isLogged } = useAuth();
 
   const renderFavouriteButton = useCallback(() => {
-    if (!token)
+    if (!isLogged)
       return (
         <Popconfirm
           title="Bạn chưa đăng nhập"
@@ -37,7 +37,7 @@ const HeaderBar = () => {
         icon={<FaHeart size={32} color={COLORS.red[1]} />}
       ></Button>
     );
-  }, [token]);
+  }, [isLogged]);
 
   const renderUnauth = useCallback(() => {
     return (
@@ -51,7 +51,7 @@ const HeaderBar = () => {
   }, []);
 
   return (
-    <div className="flex gap-6 px-4 py-5 items-center shadow-lg shadow-slate-200 sticky top-0 bg-white">
+    <div className="flex gap-6 px-4 py-5 items-center shadow-lg shadow-slate-200 sticky top-0 bg-white z-50">
       <Logo />
       <Dropdown menu={{ items }}>
         <p className="cursor-pointer hover:text-blue-400">Danh mục</p>
