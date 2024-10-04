@@ -4,10 +4,12 @@ import Footer from "@/components/Footer";
 import HeaderBar from "@/components/HeaderBar";
 import Logo from "@/components/Logo";
 import { CATEGORIES } from "@/constants";
+import { ROUTES } from "@/constants/navigation";
 import useAuth from "@/hooks/useAuth";
 import useFavourite from "@/hooks/useFavourite";
 import { Dropdown, MenuProps } from "antd";
-import React, { ReactNode, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import React, { ReactNode, useEffect, useMemo } from "react";
 
 type Props = {
   children: ReactNode;
@@ -16,6 +18,14 @@ type Props = {
 const MainLayout = ({ children }: Props) => {
   const { isLogged } = useAuth();
   const { getListFavouriteEvents } = useFavourite();
+
+  const pathname = usePathname();
+
+  const isAuthRouter = useMemo(() => {
+    if (pathname.includes(ROUTES.AUTH.LOGIN)) return true;
+    return false;
+  }, [pathname]);
+
   useEffect(() => {
     if (isLogged) {
       getListFavouriteEvents({});
@@ -24,7 +34,7 @@ const MainLayout = ({ children }: Props) => {
 
   return (
     <>
-      <HeaderBar />
+      {!isAuthRouter ? <HeaderBar /> : null}
       {children}
       <Footer />
     </>

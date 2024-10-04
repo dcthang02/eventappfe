@@ -5,6 +5,8 @@ import { Button, Pagination } from "antd";
 import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
 import UnAuthorizedImage from "@/assets/unauth.jpg";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "@/constants/navigation";
 
 type Props = {
   max?: number;
@@ -15,6 +17,8 @@ const FavouriteSection: FC<Props> = ({ max, disablePagination = false }) => {
   const { isLogged } = useAuth();
   const { favouriteEvents, favouritePagination } = useFavourite();
 
+  const router = useRouter();
+
   const renderUnAuthoried = useCallback(() => {
     return (
       <div className="col-span-4 flex flex-col items-center gap-2">
@@ -24,7 +28,11 @@ const FavouriteSection: FC<Props> = ({ max, disablePagination = false }) => {
           Bạn chưa đăng nhập! Hãy đăng nhập để có thể thêm các sự kiện yêu
           thích.
         </p>
-        <Button type="primary" size="large">
+        <Button
+          type="primary"
+          size="large"
+          onClick={() => router.push(ROUTES.AUTH.LOGIN)}
+        >
           Đăng nhập
         </Button>
       </div>
