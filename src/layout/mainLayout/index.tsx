@@ -22,7 +22,12 @@ const MainLayout = ({ children }: Props) => {
   const pathname = usePathname();
 
   const isAuthRouter = useMemo(() => {
-    if (pathname.includes(ROUTES.AUTH.LOGIN)) return true;
+    if (
+      pathname.includes(ROUTES.AUTH.LOGIN) ||
+      pathname.includes(ROUTES.AUTH.SIGNUP) ||
+      pathname.includes(ROUTES.AUTH.FORGOT_PASSWORD)
+    )
+      return true;
     return false;
   }, [pathname]);
 
