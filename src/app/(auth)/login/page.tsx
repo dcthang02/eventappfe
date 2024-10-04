@@ -9,6 +9,7 @@ import { FormElementType } from "@/utils/enum";
 import { Divider } from "antd";
 import { COLORS } from "@/constants/colors";
 import Link from "next/link";
+import { ROUTES } from "@/constants/navigation";
 
 type LoginFieldType = {
   email: string;
@@ -76,7 +77,7 @@ const LoginPage = () => {
             </p>
             <p>
               Bạn chưa có tài khoản?{" "}
-              <Link href={"/"} className="text-blue-500">
+              <Link href={ROUTES.AUTH.SIGNUP} className="text-blue-500">
                 Đăng ký
               </Link>
             </p>
