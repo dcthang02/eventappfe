@@ -70,7 +70,10 @@ const LoginPage = () => {
           <div className="w-full bg-slate-200 px-8 py-4 flex flex-col gap-3">
             <p>
               Bạn đã{" "}
-              <Link href={"/"} className="text-blue-500">
+              <Link
+                href={ROUTES.AUTH.FORGOT_PASSWORD}
+                className="text-blue-500"
+              >
                 Quên mật khẩu
               </Link>
               ?

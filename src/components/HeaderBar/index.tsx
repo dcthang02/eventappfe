@@ -5,6 +5,8 @@ import { CATEGORIES } from "@/constants";
 import { FaHeart } from "react-icons/fa";
 import { COLORS } from "@/constants/colors";
 import useAuth from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "@/constants/navigation";
 
 const items: MenuProps["items"] = CATEGORIES.map((item) => ({
   label: item.name,
@@ -13,6 +15,8 @@ const items: MenuProps["items"] = CATEGORIES.map((item) => ({
 
 const HeaderBar = () => {
   const { isLogged } = useAuth();
+
+  const router = useRouter();
 
   const renderFavouriteButton = useCallback(() => {
     if (!isLogged)
@@ -42,8 +46,14 @@ const HeaderBar = () => {
   const renderUnauth = useCallback(() => {
     return (
       <div className="flex gap-4">
-        <Button size="large">Đăng ký</Button>
-        <Button size="large" type="primary">
+        <Button size="large" onClick={() => router.push(ROUTES.AUTH.SIGNUP)}>
+          Đăng ký
+        </Button>
+        <Button
+          size="large"
+          type="primary"
+          onClick={() => router.push(ROUTES.AUTH.LOGIN)}
+        >
           Đăng nhập
         </Button>
       </div>
