@@ -22,13 +22,15 @@ export type EventModel = {
 };
 
 export type FetchEventParams = {
-  categoryId?: number;
-  provinceId?: number;
-  districtId?: number;
-  wardId?: number;
-  limit?: number;
-  offset?: number;
-  search?: number;
-  isAvailable?: number;
+  categoryId?: string;
+  provinceId?: string;
+  districtId?: string;
+  wardId?: string;
+  limit?: string;
+  offset?: string;
+  search?: string;
+  isAvailable?: string;
   isPopular?: string;
+  isFree?: string;
+  sortTicket?: string;
 };

@@ -52,3 +52,14 @@ export const CATEGORIES = [
     name: "Sự kiện khác",
   },
 ];
+
+export const SORT_VALUE = [
+  {
+    label: "Giảm dần",
+    value: "1",
+  },
+  {
+    label: "Tăng dần",
+    value: "0",
+  },
+];
