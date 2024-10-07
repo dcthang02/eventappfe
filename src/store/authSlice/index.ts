@@ -27,7 +27,11 @@ export const postLogin = createAsyncThunk(
 const authSlice = createSlice({
   initialState,
   name: "auth",
-  reducers: {},
+  reducers: {
+    setIsLoggedState: (state, action) => {
+      state.isLogged = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(postLogin.fulfilled, (state, action) => {
       if (action.payload) {

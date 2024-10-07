@@ -1,9 +1,10 @@
+import { APP_TOKEN_KEY } from "@/constants";
 import { ROUTES } from "@/constants/navigation";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { postLogin } from "@/store/authSlice";
+import authSlice, { postLogin } from "@/store/authSlice";
 import { LoginParams } from "@/utils/types";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const useAuth = () => {
@@ -13,6 +14,11 @@ const useAuth = () => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+
+  const handleCheckLoginState = useCallback(() => {
+    const token = localStorage.getItem(APP_TOKEN_KEY);
+    dispatch(authSlice.actions.setIsLoggedState(token ? true : false));
+  }, []);
 
   const handleLogin = useCallback(async (data: LoginParams) => {
     setLoading(true);
@@ -31,6 +37,7 @@ const useAuth = () => {
     isLogged,
     loading,
     login: handleLogin,
+    checkAuth: handleCheckLoginState,
   };
 };
 
