@@ -12,3 +12,11 @@ export type WardModel = {
   id: number;
   name: string;
 };
+
+export type FetchDistrictParams = {
+  provinceId?: number;
+};
+
+export type FetchWardParams = {
+  districtId?: number;
+};

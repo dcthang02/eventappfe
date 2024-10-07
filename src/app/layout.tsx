@@ -5,6 +5,9 @@ import StoreLayout from "@/layout/StoreLayout";
 import MainLayout from "@/layout/mainLayout";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -33,7 +36,21 @@ export default function RootLayout({
       >
         <AntdRegistry>
           <StoreLayout>
-            <MainLayout>{children}</MainLayout>
+            <MainLayout>
+              {children}
+              <ToastContainer
+                position="top-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
+            </MainLayout>
           </StoreLayout>
         </AntdRegistry>
       </body>

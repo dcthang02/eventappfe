@@ -7,6 +7,7 @@ import { CATEGORIES } from "@/constants";
 import { ROUTES } from "@/constants/navigation";
 import useAuth from "@/hooks/useAuth";
 import useFavourite from "@/hooks/useFavourite";
+import useLocation from "@/hooks/useLocation";
 import { Dropdown, MenuProps } from "antd";
 import { usePathname } from "next/navigation";
 import React, { ReactNode, useEffect, useMemo } from "react";
@@ -18,6 +19,7 @@ type Props = {
 const MainLayout = ({ children }: Props) => {
   const { isLogged } = useAuth();
   const { getListFavouriteEvents } = useFavourite();
+  const { getListProvinces } = useLocation();
 
   const pathname = usePathname();
 
@@ -36,6 +38,10 @@ const MainLayout = ({ children }: Props) => {
       getListFavouriteEvents({});
     }
   }, [isLogged]);
+
+  useEffect(() => {
+    getListProvinces();
+  }, []);
 
   return (
     <>

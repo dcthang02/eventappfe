@@ -39,6 +39,8 @@ const FavouriteSection: FC<Props> = ({ max, disablePagination = false }) => {
     );
   }, []);
 
+  const renderFavouriteEvents = useCallback(() => {}, [favouriteEvents]);
+
   return (
     <div className="grid grid-cols-4 gap-6 border p-10">
       {isLogged
@@ -46,7 +48,18 @@ const FavouriteSection: FC<Props> = ({ max, disablePagination = false }) => {
             <EventCard data={item} key={`event-favourite-${item?.id}`} />
           ))
         : renderUnAuthoried()}
-      {disablePagination ? null : <Pagination />}
+      {disablePagination ? null : (
+        <Pagination
+          hideOnSinglePage
+          current={
+            Math.floor(
+              favouritePagination?.offset / favouritePagination?.limit
+            ) + 1
+          }
+          pageSize={favouritePagination?.limit}
+          total={favouritePagination?.total}
+        />
+      )}
     </div>
   );
 };

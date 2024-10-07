@@ -17,6 +17,7 @@ type Props = {
   submitText?: string;
   onSubmit?: any;
   layout?: any;
+  submitLoading?: boolean;
 };
 
 const FormLayout: FC<Props> = ({
@@ -24,6 +25,7 @@ const FormLayout: FC<Props> = ({
   submitText,
   onSubmit,
   layout = "vertical",
+  submitLoading = false,
 }) => {
   const renderInput = useCallback((el: FormElement) => {
     return (
@@ -66,6 +68,8 @@ const FormLayout: FC<Props> = ({
           htmlType="submit"
           size="large"
           className="w-full"
+          loading={submitLoading}
+          disabled={submitLoading}
         >
           {submitText || "Submit"}
         </Button>

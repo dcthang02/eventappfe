@@ -63,3 +63,5 @@ export const SORT_VALUE = [
     value: "0",
   },
 ];
+
+export const APP_TOKEN_KEY = "event-app-token";

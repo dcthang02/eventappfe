@@ -10,6 +10,7 @@ import { Divider } from "antd";
 import { COLORS } from "@/constants/colors";
 import Link from "next/link";
 import { ROUTES } from "@/constants/navigation";
+import useAuth from "@/hooks/useAuth";
 
 type LoginFieldType = {
   email: string;
@@ -17,6 +18,8 @@ type LoginFieldType = {
 };
 
 const LoginPage = () => {
+  const { loading, login } = useAuth();
+
   const loginFormLayout = useMemo(() => {
     const layout: FormElement[] = [
       {
@@ -43,7 +46,7 @@ const LoginPage = () => {
   }, []);
 
   const handleSubmit = useCallback((values: LoginFieldType) => {
-    console.log(values);
+    login(values);
   }, []);
 
   return (
@@ -61,6 +64,7 @@ const LoginPage = () => {
               formLayout={loginFormLayout}
               submitText="Đăng nhập"
               onSubmit={handleSubmit}
+              submitLoading={loading}
             />
           </div>
           <Divider style={{ borderColor: COLORS.gray[0] }}>

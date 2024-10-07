@@ -1,16 +1,17 @@
+import { APP_TOKEN_KEY } from "@/constants";
 import axios from "axios";
 
+const baseURL =
+  "https://1436-2405-4800-1f14-f800-d087-6174-5860-6b2.ngrok-free.app";
+
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL,
   timeout: 10000,
-  headers: {
-    "Content-Type": ["application/json", "multipart/form-data"],
-  },
 });
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("event-app-token");
+    const token = localStorage.getItem(APP_TOKEN_KEY);
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
