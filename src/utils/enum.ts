@@ -5,4 +5,7 @@ export enum EventTypeEnum {
 
 export enum FormElementType {
   INPUT = "input",
+  SELECT = "select",
+  UPLOAD = "upload",
+  GRID = "grid",
 }
