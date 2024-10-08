@@ -4,10 +4,12 @@ import {
   fetchProvinces,
   fetchWards,
 } from "@/store/locationSlice";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 const useLocation = () => {
   const dispatch = useAppDispatch();
+  const [provinceId, setProvinceId] = useState<number | null>(null);
+  const [districtId, setDistrictId] = useState<number | null>(null);
   const { provinces, districts, wards } = useAppSelector(
     (state) => state.location
   );
@@ -35,6 +37,10 @@ const useLocation = () => {
     getListProvinces: handleGetListProvinces,
     getListDistricts: handleGetListDistricts,
     getListWards: handleGetListWards,
+    provinceId,
+    districtId,
+    setProvinceId,
+    setDistrictId,
   };
 };
 

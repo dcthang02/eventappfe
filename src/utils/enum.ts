@@ -7,5 +7,7 @@ export enum FormElementType {
   INPUT = "input",
   SELECT = "select",
   UPLOAD = "upload",
+  DATE = "date",
   GRID = "grid",
+  PASSWORD = "password",
 }

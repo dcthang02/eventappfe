@@ -34,7 +34,7 @@ const LoginPage = () => {
         placeholder: "Email. VD: user@gmail.com",
       },
       {
-        type: FormElementType.INPUT,
+        type: FormElementType.PASSWORD,
         name: "password",
         label: "Mật khẩu",
         required: true,

@@ -1,7 +1,17 @@
 import { FormElementType } from "@/utils/enum";
-import { Button, Form, FormRule, Image, Input, Select, Upload } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  FormRule,
+  Image,
+  Input,
+  Select,
+  Upload,
+} from "antd";
 import clsx from "clsx";
 import React, { FC, Fragment, useCallback, useState } from "react";
+import { PiPlusBold } from "react-icons/pi";
 
 export type FormElement = {
   type?: FormElementType;
@@ -14,6 +24,7 @@ export type FormElement = {
   options?: { label: string; value: string | number }[];
   uploadProps?: any;
   elements?: FormElement[];
+  resetName?: string[];
 };
 
 type Props = {
@@ -23,6 +34,7 @@ type Props = {
   layout?: any;
   submitLoading?: boolean;
   initialValues?: any;
+  buttonClassname?: string;
 };
 
 const FormLayout: FC<Props> = ({
@@ -32,10 +44,11 @@ const FormLayout: FC<Props> = ({
   layout = "vertical",
   submitLoading = false,
   initialValues,
+  buttonClassname = "",
 }) => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<any>();
 
-  const [formValues, setFormValues] = useState(initialValues);
+  const [formValues, setFormValues] = useState(1);
 
   const renderInput = useCallback((el: FormElement) => {
     return (
@@ -47,12 +60,16 @@ const FormLayout: FC<Props> = ({
         validateTrigger={["onBlur", "onChange"]}
         {...el?.fieldProps}
       >
-        <Input placeholder={el?.placeholder} size="large" />
+        {el?.type === FormElementType.INPUT ? (
+          <Input placeholder={el?.placeholder} size="large" />
+        ) : (
+          <Input.Password placeholder={el?.placeholder} size="large" />
+        )}
       </Form.Item>
     );
   }, []);
 
-  const renderSelect = useCallback((el: FormElement) => {
+  const renderSelect = (el: FormElement) => {
     return (
       <Form.Item
         name={el?.name}
@@ -66,10 +83,17 @@ const FormLayout: FC<Props> = ({
           placeholder={el?.placeholder}
           size="large"
           options={el?.options}
+          {...el?.fieldProps}
+          onChange={(value) => {
+            el?.fieldProps?.onChange?.(value);
+            if (el?.resetName && el?.resetName?.length > 0) {
+              form.resetFields(el?.resetName);
+            }
+          }}
         />
       </Form.Item>
     );
-  }, []);
+  };
 
   const renderUpload = useCallback(
     (el: FormElement) => {
@@ -84,36 +108,29 @@ const FormLayout: FC<Props> = ({
           {...el?.fieldProps}
         >
           <Upload
-            maxCount={el?.fieldProps?.multiple ? undefined : 1}
-            onChange={(info) => form.setFieldValue(el?.name, info.fileList)}
-            fileList={formValues?.[el?.name as string]}
-            showUploadList={false}
+            maxCount={1}
+            onChange={() => setFormValues(formValues * -1)}
+            showUploadList={true}
           >
-            {formValues?.[el?.name || ""]?.length > 0 ? (
-              <Image
-                src={URL.createObjectURL(
-                  formValues?.[el?.name || ""]?.[0]?.originFileObj
-                )}
-                preview
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: 50,
-                  marginRight: 10,
-                }}
-                onClick={(e) => e.preventDefault()}
-              />
-            ) : (
-              <Button shape="circle" htmlType="button">
-                Upload
-              </Button>
-            )}
-            {formValues?.[el?.name || ""]?.length > 0 ? (
-              <Button htmlType="button">Upload ảnh khác</Button>
-            ) : (
-              <Button htmlType="button">Upload</Button>
-            )}
-            <p>upload</p>
+            <div
+              className={clsx(
+                "w-20 h-20 rounded-full bg-slate-100 border overflow-hidden",
+                el?.fieldProps?.className
+              )}
+            >
+              {form.getFieldValue([el?.name || ""])?.length > 0 ? (
+                <img
+                  src={URL.createObjectURL(
+                    form.getFieldValue([el?.name || ""])?.[0]?.originFileObj
+                  )}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center">
+                  <PiPlusBold size={24} />
+                </div>
+              )}
+            </div>
           </Upload>
         </Form.Item>
       );
@@ -121,15 +138,20 @@ const FormLayout: FC<Props> = ({
     [formValues]
   );
 
-  const renderGrid = useCallback((el: FormElement) => {
+  const renderDatePicker = useCallback((el: FormElement) => {
     return (
-      <div className={clsx("grid grid-cols-2", el?.fieldProps?.className)}>
-        {el?.elements?.map((item) => (
-          <Fragment key={`grid-item-${item?.name}`}>
-            {renderFormElement(item)}
-          </Fragment>
-        ))}
-      </div>
+      <Form.Item
+        name={el?.name}
+        required={el?.required}
+        rules={el?.rules}
+        label={el?.label}
+      >
+        <DatePicker
+          className="w-full"
+          size="large"
+          placeholder={el?.placeholder}
+        />
+      </Form.Item>
     );
   }, []);
 
@@ -137,18 +159,38 @@ const FormLayout: FC<Props> = ({
     (el: FormElement) => {
       switch (el.type) {
         case FormElementType.INPUT:
+        case FormElementType.PASSWORD:
           return renderInput(el);
         case FormElementType.SELECT:
           return renderSelect(el);
         case FormElementType.UPLOAD:
           return renderUpload(el);
+        case FormElementType.DATE:
+          return renderDatePicker(el);
         case FormElementType.GRID:
           return renderGrid(el);
         default:
           return null;
       }
     },
-    [renderInput, renderSelect, renderUpload, renderGrid]
+    [renderInput, renderSelect, renderUpload, renderDatePicker]
+  );
+
+  const renderGrid = useCallback(
+    (el: FormElement) => {
+      return (
+        <div
+          className={clsx("grid grid-cols-2 gap-4", el?.fieldProps?.className)}
+        >
+          {el?.elements?.map((item) => (
+            <Fragment key={`grid-item-${item?.name}`}>
+              {renderFormElement(item)}
+            </Fragment>
+          ))}
+        </div>
+      );
+    },
+    [renderFormElement]
   );
 
   return (
@@ -158,17 +200,18 @@ const FormLayout: FC<Props> = ({
       form={form}
       name="form"
       initialValues={initialValues}
-      onValuesChange={(a, values) => setFormValues(values)}
     >
-      {formLayout.map((el) => (
-        <Fragment key={`item-${el.name}`}>{renderFormElement(el)}</Fragment>
+      {formLayout.map((el, index) => (
+        <Fragment key={`item-${el.name}-${index}`}>
+          {renderFormElement(el)}
+        </Fragment>
       ))}
       <Form.Item>
         <Button
           type="primary"
           htmlType="submit"
           size="large"
-          className="w-full"
+          className={clsx("w-full", buttonClassname)}
           loading={submitLoading}
           disabled={submitLoading}
         >
