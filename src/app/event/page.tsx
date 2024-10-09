@@ -1,8 +1,10 @@
 "use client";
 
+import EventCard from "@/components/EventCard";
 import { CATEGORIES, SORT_VALUE } from "@/constants";
 import useEvent from "@/hooks/useEvent";
-import { Button, Checkbox, Dropdown, MenuProps, Select } from "antd";
+import useLocation from "@/hooks/useLocation";
+import { Button, Checkbox, Select } from "antd";
 import clsx from "clsx";
 import React, { ReactNode, useCallback, useState } from "react";
 import { RiFilter2Fill } from "react-icons/ri";
@@ -14,7 +16,9 @@ const items = CATEGORIES.map((item) => ({
 }));
 
 const EventPage = () => {
-  const { filter, onChangeFilter } = useEvent();
+  const { data, filter, onChangeFilter, clearFilter } = useEvent();
+  const { provinces, districts, wards, getListDistricts, getListWards } =
+    useLocation();
 
   const [showFilter, setShowFilter] = useState(true);
 
@@ -41,36 +45,75 @@ const EventPage = () => {
         <div className="">
           <p className="text-sm font-medium">Tỉnh thành</p>
           <Select
-            options={[]}
+            options={provinces?.map((item) => ({
+              label: item?.name,
+              value: item?.id,
+            }))}
             style={{ minWidth: "100%" }}
             placeholder="Chọn tỉnh thành"
             allowClear
             size="large"
+            value={filter?.provinceId ? Number(filter?.provinceId) : undefined}
+            onChange={(value) => {
+              getListDistricts(value || -1);
+              onChangeFilter(value ? { provinceId: value.toString() } : {}, {
+                removeKey: value
+                  ? ["districtId", "wardId"]
+                  : ["provinceId", "districtId", "wardId"],
+              });
+            }}
           />
         </div>
         <div className="">
           <p className="text-sm font-medium">Quận huyện</p>
           <Select
-            options={[]}
+            options={districts?.map((item) => ({
+              label: item?.name,
+              value: item?.id,
+            }))}
             style={{ minWidth: "100%" }}
             placeholder="Chọn quận huyện"
             allowClear
             size="large"
+            value={filter?.districtId ? Number(filter?.districtId) : undefined}
+            onChange={(value) => {
+              getListWards(value);
+              onChangeFilter(value ? { districtId: value.toString() } : {}, {
+                removeKey: value ? ["wardId"] : ["districtId", "wardId"],
+              });
+            }}
           />
         </div>
         <div className="">
           <p className="text-sm font-medium">Phường</p>
           <Select
-            options={[]}
+            options={wards?.map((item) => ({
+              label: item?.name,
+              value: item?.id,
+            }))}
             style={{ minWidth: "100%" }}
             placeholder="Chọn phường xã"
             allowClear
             size="large"
+            value={filter?.wardId ? Number(filter?.wardId) : undefined}
+            onChange={(value) =>
+              onChangeFilter(value ? { wardId: value.toString() } : {}, {
+                removeKey: value ? undefined : ["wardId"],
+              })
+            }
           />
         </div>
       </div>
     );
-  }, []);
+  }, [
+    provinces,
+    districts,
+    wards,
+    filter?.provinceId,
+    filter?.districtId,
+    filter?.wardId,
+    onChangeFilter,
+  ]);
 
   const renderSortFilter = useCallback(() => {
     return (
@@ -86,6 +129,16 @@ const EventPage = () => {
       </div>
     );
   }, []);
+
+  const renderEvents = useCallback(() => {
+    return (
+      <div className="grid grid-cols-4 gap-3">
+        {data?.map((item) => (
+          <EventCard data={item} key={`card-event-${item?.id}`} />
+        ))}
+      </div>
+    );
+  }, [data]);
 
   return (
     <div className="flex">
@@ -108,23 +161,53 @@ const EventPage = () => {
               placeholder="Chọn danh mục"
               allowClear
               size="large"
+              value={
+                filter?.categoryId ? Number(filter?.categoryId) : undefined
+              }
+              onChange={(value) =>
+                onChangeFilter(value ? { categoryId: value.toString() } : {}, {
+                  removeKey: value ? undefined : ["categoryId"],
+                })
+              }
             />
           )}
           {renderFilterSection("Địa điểm", renderAddressFilter())}
-          {renderFilterSection("Giá vé", <Checkbox>Miễn phí</Checkbox>)}
+          {renderFilterSection(
+            "Giá vé",
+            <Checkbox
+              checked={filter?.isFree === "1" ? true : false}
+              onChange={(e) =>
+                onChangeFilter(e.target.checked ? { isFree: "1" } : {}, {
+                  removeKey: e.target.checked ? undefined : ["isFree"],
+                })
+              }
+            >
+              Miễn phí
+            </Checkbox>
+          )}
           {renderFilterSection(
             "Trạng thái chỗ ngồi",
-            <Checkbox>Còn chỗ trống</Checkbox>
+            <Checkbox
+              checked={filter?.isAvailable === "1" ? true : false}
+              onChange={(e) =>
+                onChangeFilter(e.target.checked ? { isAvailable: "1" } : {}, {
+                  removeKey: e.target.checked ? undefined : ["isAvailable"],
+                })
+              }
+            >
+              Còn chỗ trống
+            </Checkbox>
           )}
           {renderFilterSection("Sắp xếp", renderSortFilter(), false)}
         </div>
       </div>
-      <div className="flex-1 p-4">
+      <div className="flex-1 py-4 px-8">
         <Button
           type="text"
           icon={<VscThreeBars size={32} />}
           onClick={() => setShowFilter(!showFilter)}
         />
+        {renderEvents()}
       </div>
     </div>
   );

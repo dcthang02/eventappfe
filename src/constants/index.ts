@@ -76,3 +76,6 @@ export const EVENT_TYPE = [
     value: "online",
   },
 ];
+
+export const PLACEHOLDER_IMAGE_URL =
+  "https://www.svgrepo.com/show/508699/landscape-placeholder.svg";

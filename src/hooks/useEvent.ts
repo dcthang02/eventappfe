@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 
 type ChangeFilterOptions = {
   clearFilter?: boolean;
+  removeKey?: string[];
 };
 
 const useEvent = () => {
@@ -17,10 +18,9 @@ const useEvent = () => {
   const searchParams = useSearchParams();
 
   const [eventDetail, setEventDetail] = useState<EventModel | null>(null);
-  const [eventFilter, setEventFilter] = useState<FetchEventParams>({});
+  const [eventFilter, setEventFilter] = useState<FetchEventParams | null>(null);
 
   useEffect(() => {
-    if (searchParams.size === 0) return;
     let newFilter: any = {};
     searchParams.entries().forEach(([key, value]) => {
       newFilter[key] = value;
@@ -32,23 +32,27 @@ const useEvent = () => {
     dispatch(fetchListEvent(params));
   };
 
+  const handleClearFilter = useCallback(() => {
+    window.history.pushState(null, "");
+  }, []);
+
   const handleChangeFilter = useCallback(
     (
       filter: FetchEventParams,
-      { clearFilter }: ChangeFilterOptions = { clearFilter: false }
+      { clearFilter, removeKey }: ChangeFilterOptions = { clearFilter: false }
     ) => {
-      let newFilter = clearFilter ? filter : { ...eventFilter, ...filter };
-      setEventFilter(newFilter);
+      let newFilter: any = clearFilter ? filter : { ...eventFilter, ...filter };
+      if (removeKey && removeKey.length) {
+        for (const key of removeKey) {
+          delete newFilter[key];
+        }
+      }
 
       const params = new URLSearchParams();
       for (const [key, value] of Object.entries(newFilter)) {
-        params.set(key, value.toString());
-        window.history.pushState(
-          null,
-          "",
-          encodeURIComponent(params.toString())
-        );
+        params.set(key, (value as any).toString());
       }
+      window.history.pushState(null, "", `?${params.toString()}`);
     },
     [eventFilter]
   );
@@ -68,7 +72,7 @@ const useEvent = () => {
   useEffect(() => {
     if (eventFilter) {
       console.log(eventFilter);
-      // fetch data here
+      handleGetListEvent(eventFilter);
     }
   }, [eventFilter]);
 
@@ -80,6 +84,7 @@ const useEvent = () => {
     getEventDetail: handleGetEventDetail,
     filter: eventFilter,
     onChangeFilter: handleChangeFilter,
+    clearFilter: handleClearFilter,
   };
 };
 

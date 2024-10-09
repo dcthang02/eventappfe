@@ -1,3 +1,4 @@
+import { PLACEHOLDER_IMAGE_URL } from "@/constants";
 import { getEventAddress } from "@/utils/common";
 import { EventModel } from "@/utils/types";
 import { Button, Card, Image } from "antd";
@@ -34,7 +35,7 @@ const EventCard: FC<Props> = ({ data }) => {
         width={"100%"}
         height={180}
         className="object-cover"
-        placeholder
+        fallback={PLACEHOLDER_IMAGE_URL}
       />
       <div className="px-3">
         <p>{data?.description}</p>
