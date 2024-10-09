@@ -12,4 +12,5 @@ export enum FormElementType {
   PASSWORD = "password",
   TEXTAREA = "textarea",
   CHECKBOX = "checkbox",
+  UPLOAD_MULTIPLE = "upload_multiple",
 }

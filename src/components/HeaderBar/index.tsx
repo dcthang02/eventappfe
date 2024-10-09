@@ -141,6 +141,7 @@ const HeaderBar = () => {
             style={{
               boxShadow: `0 4px 8px ${COLORS.white[3]}`,
             }}
+            onClick={() => router.push(ROUTES.CREATE_EVENT)}
           />
         </Tooltip>
         <Dropdown

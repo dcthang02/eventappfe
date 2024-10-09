@@ -6,6 +6,7 @@ export const ROUTES = {
     FORGOT_PASSWORD: "/forgot-password",
   },
   EVENT: "/event",
+  CREATE_EVENT: "/create_event",
   ACCOUNT: {
     ACCOUNT: "/account",
     APPLY: "/apply",

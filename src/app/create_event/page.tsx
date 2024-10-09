@@ -7,17 +7,8 @@ import { FormElementType } from "@/utils/enum";
 import React, { useMemo } from "react";
 
 const CreateEventPage = () => {
-  const {
-    provinces,
-    districts,
-    wards,
-    provinceId,
-    districtId,
-    setProvinceId,
-    setDistrictId,
-    getListDistricts,
-    getListWards,
-  } = useLocation();
+  const { provinces, districts, wards, getListDistricts, getListWards } =
+    useLocation();
   const createEventLayout = useMemo(() => {
     const layout: FormElement[] = [
       {
@@ -60,6 +51,9 @@ const CreateEventPage = () => {
                 message: "Thời gian bắt đầu không được bỏ trống",
               },
             ],
+            fieldProps: {
+              showTime: true,
+            },
           },
           {
             type: FormElementType.DATE,
@@ -73,6 +67,9 @@ const CreateEventPage = () => {
                 message: "Thời gian kết thúc không được bỏ trống",
               },
             ],
+            fieldProps: {
+              showTime: true,
+            },
           },
           {
             type: FormElementType.SELECT,
@@ -87,6 +84,10 @@ const CreateEventPage = () => {
               onChange: (value: any) => getListDistricts(value),
             },
             resetName: ["districtId", "wardId"],
+            required: true,
+            rules: [
+              { required: true, message: "Tỉnh thành không được bỏ trống" },
+            ],
           },
           {
             type: FormElementType.SELECT,
@@ -101,6 +102,10 @@ const CreateEventPage = () => {
               onChange: (value: any) => getListWards(value),
             },
             resetName: ["wardId"],
+            required: true,
+            rules: [
+              { required: true, message: "Quận huyện không được bỏ trống" },
+            ],
           },
           {
             type: FormElementType.SELECT,
@@ -111,6 +116,10 @@ const CreateEventPage = () => {
               value: item.id,
             })),
             placeholder: "Chọn xã phường",
+            required: true,
+            rules: [
+              { required: true, message: "Xã phường không được bỏ trống" },
+            ],
           },
           {
             type: FormElementType.INPUT,
@@ -123,6 +132,7 @@ const CreateEventPage = () => {
           {
             type: FormElementType.CHECKBOX,
             name: "needRegister",
+            label: "Cần đăng ký ( Người dùng cần đăng ký trước )",
           },
         ],
       },
@@ -137,7 +147,7 @@ const CreateEventPage = () => {
             placeholder: "Nhập số lượng tối đa",
             rules: [
               { required: true, message: "Số lượng không được để trống" },
-              { type: "number", message: "Số lượng phải là số" },
+              { pattern: /^[0-9]+$/, message: "Số lượng phải là số" },
             ],
           },
           {
@@ -148,7 +158,7 @@ const CreateEventPage = () => {
             placeholder: "Nhập giá vé",
             rules: [
               { required: true, message: "Giá vé không được để trống" },
-              { type: "number", message: "Giá vé phải là số" },
+              { pattern: /^[0-9]+$/, message: "Giá vé phải là số" },
             ],
           },
           {
@@ -167,13 +177,24 @@ const CreateEventPage = () => {
           },
         ],
       },
+      {
+        type: FormElementType.UPLOAD_MULTIPLE,
+        name: "images",
+        label: "Hình ảnh",
+        required: true,
+        rules: [{ required: true, message: "Hình ảnh không được bỏ trống" }],
+      },
     ];
     return layout;
   }, [provinces, districts, wards]);
 
   return (
-    <div className="px-40">
-      <FormLayout formLayout={createEventLayout} submitText="Tạo sự kiện" />
+    <div className="px-40 py-10">
+      <FormLayout
+        formLayout={createEventLayout}
+        submitText="Tạo sự kiện"
+        buttonClassname="w-[20%]"
+      />
     </div>
   );
 };

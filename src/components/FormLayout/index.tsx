@@ -115,13 +115,13 @@ const FormLayout: FC<Props> = ({
     (el: FormElement) => {
       return (
         <Form.Item
+          {...el?.fieldProps}
           name={el?.name}
           required={el?.required}
           rules={el?.rules}
           label={el?.label}
           valuePropName="fileList"
           getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-          {...el?.fieldProps}
         >
           <Upload
             maxCount={1}
@@ -161,11 +161,14 @@ const FormLayout: FC<Props> = ({
         required={el?.required}
         rules={el?.rules}
         label={el?.label}
+        validateTrigger={["onBlur", "onChange"]}
       >
         <DatePicker
           className="w-full"
           size="large"
           placeholder={el?.placeholder}
+          allowClear
+          {...el?.fieldProps}
         />
       </Form.Item>
     );
@@ -173,11 +176,55 @@ const FormLayout: FC<Props> = ({
 
   const renderCheckbox = useCallback((el: FormElement) => {
     return (
-      <Form.Item>
+      <Form.Item name={el?.name}>
         <Checkbox>{el?.label}</Checkbox>
       </Form.Item>
     );
   }, []);
+
+  const renderUploadMultiple = useCallback(
+    (el: FormElement) => {
+      return (
+        <Form.Item
+          {...el?.fieldProps}
+          name={el?.name}
+          required={el?.required}
+          rules={el?.rules}
+          label={el?.label}
+          valuePropName="fileList"
+          getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
+        >
+          <Upload
+            className="multi-upload"
+            onChange={(value) => setFormValues(formValues * -1)}
+            multiple
+          >
+            <div className="grid grid-cols-4 gap-3 min-h-[200px] border p-3 w-full">
+              {form.getFieldValue([el?.name || ""])?.length > 0 ? (
+                form.getFieldValue([el?.name || ""])?.map((item: any) => {
+                  return (
+                    <div key={`item-${JSON.stringify(item)}`}>
+                      <img
+                        src={URL.createObjectURL(item?.originFileObj)}
+                        className="w-[80%] h-[150px] object-cover"
+                      />
+                      <p>{item?.name}</p>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="col-span-4 flex flex-col items-center justify-center">
+                  <PiPlusBold size={32} />
+                  <p>Tải lên</p>
+                </div>
+              )}
+            </div>
+          </Upload>
+        </Form.Item>
+      );
+    },
+    [formValues]
+  );
 
   const renderFormElement = useCallback(
     (el: FormElement) => {
@@ -195,6 +242,8 @@ const FormLayout: FC<Props> = ({
           return renderTextArea(el);
         case FormElementType.CHECKBOX:
           return renderCheckbox(el);
+        case FormElementType.UPLOAD_MULTIPLE:
+          return renderUploadMultiple(el);
         case FormElementType.GRID:
           return renderGrid(el);
         default:
@@ -208,6 +257,7 @@ const FormLayout: FC<Props> = ({
       renderDatePicker,
       renderTextArea,
       renderCheckbox,
+      renderUploadMultiple,
     ]
   );
 

@@ -25,3 +25,7 @@ body {
     text-wrap: balance;
   }
 }
+
+.multi-upload .ant-upload-select {
+  width: 100%;
+}
