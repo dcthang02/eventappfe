@@ -7,7 +7,7 @@ import {
   Popconfirm,
   Tooltip,
 } from "antd";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import Logo from "../Logo";
 import { CATEGORIES } from "@/constants";
 import { FaHeart, FaPlus } from "react-icons/fa";
@@ -26,58 +26,58 @@ const items: MenuProps["items"] = CATEGORIES.map((item) => ({
   key: item.value,
 }));
 
-const profileDropdown: MenuProps["items"] = [
-  {
-    key: "1",
-    label: (
-      <div className="flex gap-3 items-center py-2">
-        <Avatar
-          src="https://photo-resize-zmp3.zadn.vn/w600_r1x1_jpeg/cover/1/b/4/9/1b49b879bd812dbdc5f9daf66c6a48bf.jpg"
-          size={32}
-        />
-        <p className="text-slate-800 font-semibold">Nguyễn Văn A</p>
-      </div>
-    ),
-    style: {
-      cursor: "default",
-    },
-  },
-  {
-    type: "divider",
-  },
-  {
-    label: "Hồ sơ",
-    key: ROUTES.ACCOUNT.ACCOUNT,
-    icon: <CiUser size={18} />,
-    style: { paddingTop: 10, paddingBottom: 10 },
-  },
-  {
-    label: "Lịch sử tham gia",
-    key: ROUTES.ACCOUNT.APPLY,
-    icon: <BsClockHistory size={18} />,
-    style: { paddingTop: 10, paddingBottom: 10 },
-  },
-  {
-    label: "Lịch sử tổ chức",
-    key: ROUTES.ACCOUNT.ORGANIZED,
-    icon: <GoOrganization size={18} />,
-    style: { paddingTop: 10, paddingBottom: 10 },
-  },
-  {
-    type: "divider",
-  },
-  {
-    label: "Đăng xuất",
-    key: "logout",
-    icon: <RiLogoutBoxLine size={18} />,
-    style: { paddingTop: 10, paddingBottom: 10 },
-  },
-];
-
 const HeaderBar = () => {
-  const { isLogged } = useAuth();
+  const { isLogged, profile } = useAuth();
 
   const router = useRouter();
+
+  const profileDropdown: MenuProps["items"] = useMemo(() => {
+    const data: MenuProps["items"] = [
+      {
+        key: "1",
+        label: (
+          <div className="flex gap-3 items-center py-2">
+            <Avatar src={profile?.imageUrl} size={32} />
+            <p className="text-slate-800 font-semibold">{profile?.fullname}</p>
+          </div>
+        ),
+        style: {
+          cursor: "default",
+        },
+      },
+      {
+        type: "divider",
+      },
+      {
+        label: "Hồ sơ",
+        key: ROUTES.ACCOUNT.ACCOUNT,
+        icon: <CiUser size={18} />,
+        style: { paddingTop: 10, paddingBottom: 10 },
+      },
+      {
+        label: "Lịch sử tham gia",
+        key: ROUTES.ACCOUNT.APPLY,
+        icon: <BsClockHistory size={18} />,
+        style: { paddingTop: 10, paddingBottom: 10 },
+      },
+      {
+        label: "Lịch sử tổ chức",
+        key: ROUTES.ACCOUNT.ORGANIZED,
+        icon: <GoOrganization size={18} />,
+        style: { paddingTop: 10, paddingBottom: 10 },
+      },
+      {
+        type: "divider",
+      },
+      {
+        label: "Đăng xuất",
+        key: "logout",
+        icon: <RiLogoutBoxLine size={18} />,
+        style: { paddingTop: 10, paddingBottom: 10 },
+      },
+    ];
+    return data;
+  }, [profile]);
 
   const handleClickMenuItem = useCallback((info: MenuInfo) => {
     if (info.key === "1") return;
@@ -150,14 +150,14 @@ const HeaderBar = () => {
           overlayStyle={{ width: 180 }}
         >
           <Avatar
-            src="https://photo-resize-zmp3.zadn.vn/w600_r1x1_jpeg/cover/1/b/4/9/1b49b879bd812dbdc5f9daf66c6a48bf.jpg"
+            src={profile?.imageUrl}
             size={38}
             className="cursor-pointer"
           />
         </Dropdown>
       </div>
     );
-  }, []);
+  }, [profile]);
 
   return (
     <div className="flex gap-6 px-4 py-5 items-center shadow-lg shadow-slate-200 sticky top-0 bg-white z-50">

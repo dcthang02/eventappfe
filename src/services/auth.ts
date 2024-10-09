@@ -10,6 +10,14 @@ const authService = {
     });
     return response?.data;
   },
+  getProfile: async () => {
+    const response = await axiosInstance.get("/user", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response?.data;
+  },
 };
 
 export default authService;

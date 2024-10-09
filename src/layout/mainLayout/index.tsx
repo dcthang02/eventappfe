@@ -17,13 +17,19 @@ type Props = {
 };
 
 const MainLayout = ({ children }: Props) => {
-  const { isLogged, checkAuth } = useAuth();
+  const { isLogged, checkAuth, getProfile } = useAuth();
   const { getListFavouriteEvents } = useFavourite();
   const { getListProvinces } = useLocation();
 
   useEffect(() => {
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    if (isLogged) {
+      getProfile();
+    }
+  }, [isLogged]);
 
   const pathname = usePathname();
 

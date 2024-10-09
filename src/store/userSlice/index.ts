@@ -1,4 +1,5 @@
 import { DEFAULT_PAGINATION } from "@/constants";
+import authService from "@/services/auth";
 import eventService from "@/services/event";
 import {
   EventModel,
@@ -13,6 +14,17 @@ const initialState = {
   favouriteEvents: [] as EventModel[],
   favouritePagination: DEFAULT_PAGINATION as PaginationType,
 };
+
+export const fetchUserProfile = createAsyncThunk("user/profile", async () => {
+  try {
+    const res = await authService.getProfile();
+    if (res?.success) {
+      return res?.data;
+    }
+  } catch (error) {
+    return null;
+  }
+});
 
 export const fetchFavouriteEvents = createAsyncThunk(
   "user/favourite-events",
@@ -33,13 +45,18 @@ const userSlice = createSlice({
   name: "user",
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchFavouriteEvents.fulfilled, (state, action) => {
+    builder.addCase(fetchUserProfile.fulfilled, (state, action) => {
       if (action.payload) {
-        (state.favouriteEvents = action.payload?.items || []),
-          (state.favouritePagination =
-            action.payload?.pagination || DEFAULT_PAGINATION);
+        state.user = action.payload?.item;
       }
-    });
+    }),
+      builder.addCase(fetchFavouriteEvents.fulfilled, (state, action) => {
+        if (action.payload) {
+          (state.favouriteEvents = action.payload?.items || []),
+            (state.favouritePagination =
+              action.payload?.pagination || DEFAULT_PAGINATION);
+        }
+      });
   },
 });
 
