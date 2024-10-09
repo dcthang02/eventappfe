@@ -1,4 +1,6 @@
+import { ROUTES } from "@/constants/navigation";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 import React, { FC, useMemo } from "react";
 
 type Props = {
@@ -6,6 +8,7 @@ type Props = {
 };
 
 const Logo: FC<Props> = ({ size = "default" }) => {
+  const router = useRouter();
   const textSize = useMemo(() => {
     switch (size) {
       case "default":
@@ -19,7 +22,14 @@ const Logo: FC<Props> = ({ size = "default" }) => {
         break;
     }
   }, [size]);
-  return <div className={clsx("font-semibold", textSize)}>Logo</div>;
+  return (
+    <div
+      className={clsx("font-semibold cursor-pointer", textSize)}
+      onClick={() => router.push(ROUTES.HOME)}
+    >
+      Logo
+    </div>
+  );
 };
 
 export default Logo;

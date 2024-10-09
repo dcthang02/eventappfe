@@ -1,8 +1,10 @@
+import eventService from "@/services/event";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { fetchListEvent } from "@/store/eventSlice";
-import { FetchEventParams } from "@/utils/types";
+import { EventModel, FetchEventParams } from "@/utils/types";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 type ChangeFilterOptions = {
   clearFilter?: boolean;
@@ -14,6 +16,7 @@ const useEvent = () => {
 
   const searchParams = useSearchParams();
 
+  const [eventDetail, setEventDetail] = useState<EventModel | null>(null);
   const [eventFilter, setEventFilter] = useState<FetchEventParams>({});
 
   useEffect(() => {
@@ -50,6 +53,18 @@ const useEvent = () => {
     [eventFilter]
   );
 
+  const handleGetEventDetail = useCallback(async (id?: number) => {
+    if (!id) return;
+    try {
+      const res = await eventService.getDetailEvent(id);
+      if (res?.success) {
+        setEventDetail(res?.data?.item);
+      }
+    } catch (error) {
+      toast.error("Đã có lỗi xảy ra");
+    }
+  }, []);
+
   useEffect(() => {
     if (eventFilter) {
       console.log(eventFilter);
@@ -59,8 +74,10 @@ const useEvent = () => {
 
   return {
     data,
+    eventDetail,
     pagination,
     getEventData: handleGetListEvent,
+    getEventDetail: handleGetEventDetail,
     filter: eventFilter,
     onChangeFilter: handleChangeFilter,
   };

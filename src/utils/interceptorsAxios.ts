@@ -1,11 +1,15 @@
 import { APP_TOKEN_KEY } from "@/constants";
 import axios from "axios";
 
-const baseURL = "http://localhost:4000";
+export const baseURL =
+  "https://8d64-2405-4800-1f14-f800-616b-9512-ec74-fc2b.ngrok-free.app";
 
 const axiosInstance = axios.create({
   baseURL,
   timeout: 10000,
+  headers: {
+    "ngrok-skip-browser-warning": "1",
+  },
 });
 
 axiosInstance.interceptors.request.use(

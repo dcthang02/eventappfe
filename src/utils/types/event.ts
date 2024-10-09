@@ -1,4 +1,5 @@
 import { DistrictModel, ProvinceModel, WardModel } from "./location";
+import { UserModel } from "./user";
 
 export type EventModel = {
   id: number;
@@ -19,6 +20,7 @@ export type EventModel = {
   ticketPrice: number;
   totalParticipants: number;
   remainingSlot: number;
+  owner: UserModel;
 };
 
 export type FetchEventParams = {

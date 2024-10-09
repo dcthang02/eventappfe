@@ -2,6 +2,7 @@ import { getEventAddress } from "@/utils/common";
 import { EventModel } from "@/utils/types";
 import { Button, Card, Image } from "antd";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 import React, { FC } from "react";
 
 const { Meta } = Card;
@@ -11,6 +12,7 @@ type Props = {
 };
 
 const EventCard: FC<Props> = ({ data }) => {
+  const router = useRouter();
   const renderRowInfo = (title: string, value?: any) => {
     return (
       <div className="grid grid-cols-3 gap-2 text-sm text-slate-500 font-medium">
@@ -44,7 +46,12 @@ const EventCard: FC<Props> = ({ data }) => {
         )}
         {renderRowInfo("Địa điểm", getEventAddress(data))}
         <div className="flex justify-end">
-          <Button type="primary">Truy cập</Button>
+          <Button
+            type="primary"
+            onClick={() => router.push(`event/${data?.id}`)}
+          >
+            Truy cập
+          </Button>
         </div>
       </div>
     </div>
