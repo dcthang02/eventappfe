@@ -10,4 +10,6 @@ export enum FormElementType {
   DATE = "date",
   GRID = "grid",
   PASSWORD = "password",
+  TEXTAREA = "textarea",
+  CHECKBOX = "checkbox",
 }

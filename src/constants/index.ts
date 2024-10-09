@@ -65,3 +65,14 @@ export const SORT_VALUE = [
 ];
 
 export const APP_TOKEN_KEY = "event-app-token";
+
+export const EVENT_TYPE = [
+  {
+    label: "Offline",
+    value: "offline",
+  },
+  {
+    label: "Online",
+    value: "online",
+  },
+];

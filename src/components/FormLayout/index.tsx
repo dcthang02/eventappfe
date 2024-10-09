@@ -1,6 +1,7 @@
 import { FormElementType } from "@/utils/enum";
 import {
   Button,
+  Checkbox,
   DatePicker,
   Form,
   FormRule,
@@ -65,6 +66,21 @@ const FormLayout: FC<Props> = ({
         ) : (
           <Input.Password placeholder={el?.placeholder} size="large" />
         )}
+      </Form.Item>
+    );
+  }, []);
+
+  const renderTextArea = useCallback((el: FormElement) => {
+    return (
+      <Form.Item
+        name={el?.name}
+        required={el?.required}
+        rules={el?.rules}
+        label={el?.label}
+        validateTrigger={["onBlur", "onChange"]}
+        {...el?.fieldProps}
+      >
+        <Input.TextArea placeholder={el?.placeholder} rows={4} />
       </Form.Item>
     );
   }, []);
@@ -155,6 +171,14 @@ const FormLayout: FC<Props> = ({
     );
   }, []);
 
+  const renderCheckbox = useCallback((el: FormElement) => {
+    return (
+      <Form.Item>
+        <Checkbox>{el?.label}</Checkbox>
+      </Form.Item>
+    );
+  }, []);
+
   const renderFormElement = useCallback(
     (el: FormElement) => {
       switch (el.type) {
@@ -167,13 +191,24 @@ const FormLayout: FC<Props> = ({
           return renderUpload(el);
         case FormElementType.DATE:
           return renderDatePicker(el);
+        case FormElementType.TEXTAREA:
+          return renderTextArea(el);
+        case FormElementType.CHECKBOX:
+          return renderCheckbox(el);
         case FormElementType.GRID:
           return renderGrid(el);
         default:
           return null;
       }
     },
-    [renderInput, renderSelect, renderUpload, renderDatePicker]
+    [
+      renderInput,
+      renderSelect,
+      renderUpload,
+      renderDatePicker,
+      renderTextArea,
+      renderCheckbox,
+    ]
   );
 
   const renderGrid = useCallback(
