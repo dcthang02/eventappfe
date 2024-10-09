@@ -7,6 +7,7 @@ import useLocation from "@/hooks/useLocation";
 import { Button, Checkbox, Select } from "antd";
 import clsx from "clsx";
 import React, { ReactNode, useCallback, useState } from "react";
+import { MdClearAll } from "react-icons/md";
 import { RiFilter2Fill } from "react-icons/ri";
 import { VscThreeBars } from "react-icons/vsc";
 
@@ -120,15 +121,35 @@ const EventPage = () => {
       <div className="flex flex-col gap-2">
         <div className="grid grid-cols-2 gap-2 items-center">
           <p>Độ phổ biến</p>
-          <Select options={SORT_VALUE} allowClear placeholder="Độ phổ biến" />
+          <Select
+            options={SORT_VALUE}
+            allowClear
+            placeholder="Độ phổ biến"
+            value={filter?.isPopular || undefined}
+            onChange={(value) =>
+              onChangeFilter(value ? { isPopular: value } : {}, {
+                removeKey: value ? undefined : ["isPopular"],
+              })
+            }
+          />
         </div>
         <div className="grid grid-cols-2 gap-2 items-center">
           <p>Giá vé</p>
-          <Select options={SORT_VALUE} allowClear placeholder="Giá vé" />
+          <Select
+            options={SORT_VALUE}
+            allowClear
+            placeholder="Giá vé"
+            value={filter?.sortTicket || undefined}
+            onChange={(value) =>
+              onChangeFilter(value ? { sortTicket: value } : {}, {
+                removeKey: value ? undefined : ["sortTicket"],
+              })
+            }
+          />
         </div>
       </div>
     );
-  }, []);
+  }, [filter?.isPopular, filter?.sortTicket]);
 
   const renderEvents = useCallback(() => {
     return (
@@ -152,6 +173,13 @@ const EventPage = () => {
           <div className="flex items-center gap-3">
             <RiFilter2Fill />
             <p className="text-xl font-semibold text-slate-800">Bộ lọc</p>
+            <Button
+              icon={<MdClearAll />}
+              className="ml-auto"
+              onClick={() => clearFilter()}
+            >
+              Xóa
+            </Button>
           </div>
           {renderFilterSection(
             "Danh mục",

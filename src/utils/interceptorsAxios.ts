@@ -1,8 +1,7 @@
 import { APP_TOKEN_KEY } from "@/constants";
 import axios from "axios";
 
-export const baseURL =
-  "https://8d64-2405-4800-1f14-f800-616b-9512-ec74-fc2b.ngrok-free.app";
+export const baseURL = "http://localhost:4000";
 
 const axiosInstance = axios.create({
   baseURL,

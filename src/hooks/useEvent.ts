@@ -33,8 +33,9 @@ const useEvent = () => {
   };
 
   const handleClearFilter = useCallback(() => {
-    window.history.pushState(null, "");
-  }, []);
+    if (eventFilter && Object.keys(eventFilter).length > 0)
+      window.history.pushState(null, "", "?");
+  }, [eventFilter]);
 
   const handleChangeFilter = useCallback(
     (
